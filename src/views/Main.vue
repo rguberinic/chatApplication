@@ -63,7 +63,7 @@ export default {
     height: 95%;
     width: 100%;
     border: 1px solid black;
-    @include Flex(column)
+    @include Flex(column);
 
     #interface {
       width:80%;
