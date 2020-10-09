@@ -110,6 +110,7 @@ export default {
       .then ((res) => {
         console.log(res)
         this.chats = res.data.data;
+        this.groupChatId = this.chats[0].grc_id;
       })
       .catch ((ex) => {
         console.log(ex)
@@ -119,12 +120,23 @@ export default {
       this.groupChatId = grcId
       console.log(this.groupChatId)
       this.getChat(grcId)
+    },
+    refreshMsgs () {
+      if (this.groupChatId) {
+        setInterval(() => {
+          this.getChat(this.groupChatId)
+        }, 5000);
+      }
     }
   },
   mounted() {
-    this.getChat(17)
+    this.getChat(this.groupChatId)
     this.getUsers()
     this.fetchGroupChats()
+    setInterval(() => {
+      this.getChat(this.groupChatId)
+      console.log('new msgs')
+    }, 3000);
   }
 }
 </script>
