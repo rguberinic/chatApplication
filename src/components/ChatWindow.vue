@@ -6,7 +6,7 @@
           <h3>{{message.userUsername}}</h3>
           <p>{{message.msgContent}}</p>
         </div>
-        <div class="msgTime">{{message.msgTime}}</div>
+        <!-- <div class="msgTime">{{message.msgTime}}</div> -->
       </div>
     </div>
     <div id="input-container">
@@ -36,7 +36,7 @@ export default {
     ...mapState(['currentUser'])
   },
   mounted(){
-    console.log(this.currentUser)
+    
   }
 }
 </script>
@@ -98,5 +98,10 @@ export default {
 
   .reverse {
     flex-direction: row-reverse;
+    
+
+    h3 {
+      text-align: right !important;
+    }
   }
 </style>

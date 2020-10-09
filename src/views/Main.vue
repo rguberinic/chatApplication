@@ -8,7 +8,7 @@
         <ChatWindow :messages='messages' @handleSendMsg='handleSendMsg'/>
       </div>
       <div id="interface-right">
-
+        <RightCurrentChatParticipants :currentChatParticipants='currentChatParticipants' :users='users' @handleRemoveParticipants='handleRemoveParticipants'/>
       </div>
     </div>
   </div>
@@ -17,13 +17,15 @@
 <script>
 import User from '../javascript/User'
 import LeftWindowUsersChats from '../components/LeftWindowUsersChats'
+import RightCurrentChatParticipants from '../components/RightCurrentChatParticipants'
 import Message from '../javascript/Message'
 import axios from 'axios'
 import ChatWindow from '../components/ChatWindow'
 export default {
   components: {
     ChatWindow,
-    LeftWindowUsersChats
+    LeftWindowUsersChats,
+    RightCurrentChatParticipants
   },
   data(){
     return {
@@ -32,7 +34,9 @@ export default {
       currentMsg:'',
       test:null,
       chats: [],
-      groupChatId: null
+      groupChatId: null,
+      currentChatParticipants:[],
+      usersNotParticipatig:[]
     }
   },
   methods: {
@@ -43,6 +47,10 @@ export default {
         }
       })
       .then((response)=> {
+        this.currentChatParticipants = []
+        for(let i = 0; i < response.data.groupChatUsers.length; i++){
+          this.currentChatParticipants.push(new User(response.data.groupChatUsers[i].usr_id,response.data.groupChatUsers[i].usr_username,response.data.groupChatUsers[i].usr_email))
+        }
         this.messages = [];
         for(let i = 0; i < response.data.data.length; i++) {
           this.messages.push(new Message(response.data.data[i].msg_id,response.data.data[i].msg_content,response.data.data[i].msg_time,response.data.data[i].usr_id,response.data.data[i].usr_username))
@@ -65,15 +73,14 @@ export default {
       })
     },
     handleSendMsg (msg) {
-      console.log(msg)
       console.log(this.groupChatId)
       axios.post('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + this.groupChatId, {
         sid: localStorage.getItem('sid'),
         grcId: this.groupChatId,
         msgContent: msg
       })
-      .then ((res) => {
-        console.log(res)
+      .then (() => {
+
         this.messages = [];
         this.getChat (this.groupChatId);
       })
@@ -86,7 +93,7 @@ export default {
       for(let i = 0; i < usersChosenForNewChat.length; i++){
         ids.push(usersChosenForNewChat[i].userId)
       }
-      console.log(chatName,ids)
+
       axios.post('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat', {
         sid:localStorage.getItem('sid'),
         groupChatName: chatName,
@@ -119,12 +126,37 @@ export default {
       this.groupChatId = grcId
       console.log(this.groupChatId)
       this.getChat(grcId)
+    },
+    handleRemoveParticipants(userId) {
+      if(this.groupChatId== null){
+        this.groupChatId = 17
+      }
+      axios.patch('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + this.groupChatId, {
+        sid:localStorage.getItem('sid'),
+        grcId:this.groupChatId,
+        kickedUserId:userId
+      })
+      .then((response) => {
+        if(response.data.message == "Ok") {
+          for(let i = 0; i < this.currentChatParticipants.length; i++) {
+            if(this.currentChatParticipants[i].userId == userId){
+              this.currentChatParticipants.splice(i,1)
+            }
+          }
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     }
   },
   mounted() {
-    this.getChat(17)
     this.getUsers()
+    this.getChat(17)
     this.fetchGroupChats()
+  },
+  computed:{
+
   }
 }
 </script>

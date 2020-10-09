@@ -21,7 +21,6 @@ export const store = new Vuex.Store({
       })
         .then((response) => {
           state.currentUser = new User(response.data.data.usr_id, response.data.data.usr_username, response.data.data.usr_email)
-          console.log(state.currentUser)
         })
         .catch((error) => {
           console.log(error);
