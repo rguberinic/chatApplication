@@ -10,6 +10,9 @@
       <div id="interface-right">
         <RightCurrentChatParticipants :currentChatParticipants='currentChatParticipants' :users='users' @handleRemoveParticipants='handleRemoveParticipants'/>
       </div>
+      <div>
+        <span v-for="(usr, idx) in notActiveUsers" :key="idx"> {{usr.username}} </span>
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +39,8 @@ export default {
       chats: [],
       groupChatId: null,
       currentChatParticipants:[],
-      usersNotParticipatig:[]
+      usersNotParticipatig:[],
+      notActiveUsers: []
     }
   },
   methods: {
@@ -55,6 +59,7 @@ export default {
         for(let i = 0; i < response.data.data.length; i++) {
           this.messages.push(new Message(response.data.data[i].msg_id,response.data.data[i].msg_content,response.data.data[i].msg_time,response.data.data[i].usr_id,response.data.data[i].usr_username))
         }
+        this.fetchNotActiveUsers ();
       })
       .catch((error)=> {
         console.log(error);
@@ -149,6 +154,26 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+    fetchNotActiveUsers () {
+      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/auth/login')
+      .then((response)=> {
+        this.notActiveUsers = [];
+        for(let i = 0; i < response.data.users.length; i++) {
+          for (let j of this.currentChatParticipants) {
+            if (response.data.users[i].usr_id === j.userId) {
+              continue;
+            }
+            if (response.data.users[i].usr_id !== j.userId) {
+              this.notActiveUsers.push(new User(response.data.users[i].usr_id,response.data.users[i].usr_username,response.data.users[i].usr_email))
+            }
+
+          }
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
     }
   },
   mounted() {
