@@ -2,7 +2,7 @@
   <div id="left-window-users-chats">
       <div id="chats">
           <div id="existing-chats" v-for="chat in chats" :key="chat.grc_id">
-              <h5> {{chat.grc_name}} </h5>
+              <h5 @click="handleChangeChat(chat.grc_id)"> {{chat.grc_name}} </h5>
           </div>
           <div id="make-chat">
               <h2>Chosen users for new chat</h2>
@@ -53,6 +53,9 @@ export default {
             this.$emit('handleMakeAChat', usersChosenForNewChat,chatName);
             this.usersChosenForNewChat = [];
             this.chatName = ''
+        },
+        handleChangeChat(grcId) {
+            this.$emit('handleChangeChat', grcId);
         }
     }
 }
@@ -77,5 +80,17 @@ export default {
     #current-users-container {
         border: 1px solid pink;
 
+    }
+    #existing-chats{
+        h5{
+            cursor: pointer;
+            padding: 5px;
+            border: 2px solid #2dfb03;
+            transition: .5s;
+        }
+        h5:hover{
+            transform: scale(1.5);
+            background: #2dfb03;
+        }
     }
 </style>

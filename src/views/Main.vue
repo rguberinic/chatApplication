@@ -2,7 +2,7 @@
   <div id="main">
     <div id="interface">
       <div id="interface-left">
-        <LeftWindowUsersChats :users='users' @handleMakeAChat='handleMakeAChat'/>
+        <LeftWindowUsersChats :users='users' @handleMakeAChat='handleMakeAChat' :chats='chats' @handleChangeChat='handleChangeChat' />
       </div>
       <div id="interface-center">
         <ChatWindow :messages='messages' @handleSendMsg='handleSendMsg'/>
@@ -30,17 +30,20 @@ export default {
       messages:[],
       users:[],
       currentMsg:'',
-      test:null
+      test:null,
+      chats: [],
+      groupChatId: null
     }
   },
   methods: {
-    getChat() {
-      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/17', {
+    getChat(chatId) {
+      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + chatId, {
         params: {
           sid: localStorage.getItem('sid')
         }
       })
       .then((response)=> {
+        this.messages = [];
         for(let i = 0; i < response.data.data.length; i++) {
           this.messages.push(new Message(response.data.data[i].msg_id,response.data.data[i].msg_content,response.data.data[i].msg_time,response.data.data[i].usr_id,response.data.data[i].usr_username))
         }
@@ -63,15 +66,16 @@ export default {
     },
     handleSendMsg (msg) {
       console.log(msg)
-      axios.post('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/17', {
+      console.log(this.groupChatId)
+      axios.post('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + this.groupChatId, {
         sid: localStorage.getItem('sid'),
-        grcId: 17,
+        grcId: this.groupChatId,
         msgContent: msg
       })
       .then ((res) => {
         console.log(res)
         this.messages = [];
-        this.getChat ();
+        this.getChat (this.groupChatId);
       })
       .catch ((ex) => {
         console.log(ex)
@@ -105,15 +109,20 @@ export default {
       })
       .then ((res) => {
         console.log(res)
+        this.chats = res.data.data;
       })
       .catch ((ex) => {
         console.log(ex)
       })
+    },
+    handleChangeChat (grcId) {
+      this.groupChatId = grcId
+      console.log(this.groupChatId)
+      this.getChat(grcId)
     }
-    
   },
   mounted() {
-    this.getChat()
+    this.getChat(17)
     this.getUsers()
     this.fetchGroupChats()
   }
