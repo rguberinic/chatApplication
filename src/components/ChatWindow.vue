@@ -26,7 +26,8 @@ export default {
   },
   methods: {
     handleSendMsg (msg) {
-      this.$emit('handleSendMsg', msg)
+      this.$emit('handleSendMsg', msg);
+      this.msg = '';
     }
   },
   mounted(){

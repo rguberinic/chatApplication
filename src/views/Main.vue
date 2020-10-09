@@ -29,6 +29,7 @@ export default {
   },
   methods: {
     getChat() {
+      //ovde cemo da kada klikne na grupu da ga odvede na ovaj chat i da dobije ovaj :id na kraju apija, da bi bilo dinamicki sve. to mozemo preko router.params
       axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/17', {
         params: {
           sid: localStorage.getItem('sid')
