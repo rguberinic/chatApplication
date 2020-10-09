@@ -1,7 +1,7 @@
 <template>
   <div id="chat-window">
     <div id="message-container">
-      <div class="single-message" v-for="message in messages" :key="message.msgId">
+      <div class="single-message" v-for="message in messages" :key="message.msgId" :class='{reverse: message.userId == currentUser.userId}'>
         <div>
           <h3>{{message.userUsername}}</h3>
           <p>{{message.msgContent}}</p>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   props:['messages'],
   data () {
@@ -31,8 +32,11 @@ export default {
       this.msg = '';
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   mounted(){
-    
+    console.log(this.currentUser)
   }
 }
 </script>
@@ -90,5 +94,9 @@ export default {
         font-size: 0.8em;
       }
     }
+  }
+
+  .reverse {
+    flex-direction: row-reverse;
   }
 </style>

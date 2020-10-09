@@ -7,10 +7,10 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    currentUser: new User()
+    currentUser: null
   },
   mutations: {
-    checkSession() {
+    checkSession(state) {
       if (!localStorage.getItem('sid')) {
         return
       }
@@ -20,9 +20,8 @@ export const store = new Vuex.Store({
         }
       })
         .then((response) => {
-          // console.log(response.data.data)
-          this.currentUser = new User(response.data.data.usr_id, response.data.data.usr_username, response.data.data.usr_email)
-          // console.log(this.currentUser)
+          state.currentUser = new User(response.data.data.usr_id, response.data.data.usr_username, response.data.data.usr_email)
+          console.log(state.currentUser)
         })
         .catch((error) => {
           console.log(error);
