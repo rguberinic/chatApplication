@@ -1,8 +1,8 @@
 class User {
   constructor(userId, username, userEmail) {
-    this.userId = userId,
-      this.username = username,
-      this.userEmail = userEmail
+    this.userId = userId;
+    this.username = username;
+    this.userEmail = userEmail;
   }
 }
 

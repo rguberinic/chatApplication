@@ -5,7 +5,7 @@
         <LeftWindowUsers :users='users'/>
       </div>
       <div id="interface-center">
-        <ChatWindow :messages='messages'/>
+        <ChatWindow :messages='messages' @handleSendMsg="handleSendMsg"/>
       </div>
       <div id="interface-right">
 
@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     getChat() {
+      //ovde cemo da kada klikne na grupu da ga odvede na ovaj chat i da dobije ovaj :id na kraju apija, da bi bilo dinamicki sve. to mozemo preko router.params
       axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/17', {
         params: {
           sid: localStorage.getItem('sid')
@@ -56,6 +57,20 @@ export default {
       })
       .catch(function (error) {
         console.log(error);
+    handleSendMsg (msg) {
+      console.log(msg)
+      axios.post('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/17', {
+        sid: localStorage.getItem('sid'),
+        grcId: 17,
+        msgContent: msg
+      })
+      .then ((res) => {
+        console.log(res)
+        this.messages = [];
+        this.getChat ();
+      })
+      .catch ((ex) => {
+        console.log(ex)
       })
     }
   },
