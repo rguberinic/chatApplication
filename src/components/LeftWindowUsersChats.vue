@@ -7,7 +7,7 @@
           <div id="make-chat">
               <h2>Chosen users for new chat</h2>
               <div id="chosen-users-container" v-for='user in usersChosenForNewChat' :key='user.userId'>
-                  <span>{{user.username}}</span> <button>-</button>
+                  <span>{{user.username}}</span> <button @click='removeUserFromNewChat(user.userId)'>-</button>
               </div>
               <input type="text" v-model="chatName" placeholder="Chose a name for your chat">
               <button @click='handleMakeAChat(usersChosenForNewChat,chatName)'>Submit</button>
@@ -41,6 +41,13 @@ export default {
                     this.users.splice([i],1)
                 }
             }
+        },
+        removeUserFromNewChat(param){
+            for(let i = 0; i < this.usersChosenForNewChat.length; i++) {
+                if(this.usersChosenForNewChat[i].userId == param){
+                    this.usersChosenForNewChat.splice([i],1)
+                }
+            } 
         },
         handleMakeAChat(usersChosenForNewChat,chatName) {
             this.$emit('handleMakeAChat', usersChosenForNewChat,chatName);
