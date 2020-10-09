@@ -20,6 +20,7 @@ export const store = new Vuex.Store({
         }
       })
         .then((response) => {
+          console.log(response.data.data)
           this.currentUser = new User(response.data.data.usr_id, response.data.data.usr_username, response.data.data.usr_email)
           console.log(this.currentUser)
         })

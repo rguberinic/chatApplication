@@ -1,7 +1,13 @@
 <template>
   <div id="chat-window">
     <div id="message-container">
-
+      <div class="single-message" v-for="message in messages" :key="message.msgId">
+        <div>
+          <h3>{{message.userUsername}}</h3>
+          <p>{{message.msgContent}}</p>
+        </div>
+        <div class="msgTime">{{message.msgTime}}</div>
+      </div>
     </div>
     <div id="input-container">
       <textarea></textarea>
@@ -12,7 +18,11 @@
 
 <script>
 export default {
+  props:['messages'],
 
+  mounted(){
+    
+  }
 }
 </script>
 
@@ -52,6 +62,21 @@ export default {
 
     button {
       height: 74px;
+    }
+
+    .single-message {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2% 2% 3% 2%;
+
+      h3 {
+        text-align: left;
+      }
+
+      .msgTime {
+        font-size: 0.8em;
+      }
     }
   }
 </style>

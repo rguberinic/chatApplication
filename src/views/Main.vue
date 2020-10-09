@@ -5,7 +5,7 @@
 
       </div>
       <div id="interface-center">
-        <ChatWindow/>
+        <ChatWindow :messages='messages'/>
       </div>
       <div id="interface-right">
 
