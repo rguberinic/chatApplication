@@ -128,7 +128,6 @@ export default {
       console.log(this.groupChatId)
       this.getChat(grcId)
     },
-<<<<<<< HEAD
     handleRemoveParticipants(userId) {
       if(this.groupChatId== null){
         this.groupChatId = 17
@@ -153,32 +152,15 @@ export default {
     }
   },
   mounted() {
-=======
-    refreshMsgs () {
-      if (this.groupChatId) {
-        setInterval(() => {
-          this.getChat(this.groupChatId)
-        }, 5000);
-      }
-    }
-  },
-  mounted() {
-    this.getChat(this.groupChatId)
->>>>>>> 40404e221ac672bf3281e1b40b4eab231390c1f4
     this.getUsers()
     this.getChat(17)
     this.fetchGroupChats()
-<<<<<<< HEAD
-  },
-  computed:{
-
-=======
-    setInterval(() => {
+        setInterval(() => {
       this.getChat(this.groupChatId)
       console.log('new msgs')
     }, 3000);
->>>>>>> 40404e221ac672bf3281e1b40b4eab231390c1f4
-  }
+  },
+
 }
 </script>
 
