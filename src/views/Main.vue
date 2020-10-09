@@ -96,12 +96,26 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+    fetchGroupChats () {
+      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat', {
+        params: {
+          sid: localStorage.getItem('sid')
+        }
+      })
+      .then ((res) => {
+        console.log(res)
+      })
+      .catch ((ex) => {
+        console.log(ex)
+      })
     }
     
   },
   mounted() {
     this.getChat()
     this.getUsers()
+    this.fetchGroupChats()
   }
 }
 </script>

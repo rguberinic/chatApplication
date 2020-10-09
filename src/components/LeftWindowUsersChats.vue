@@ -1,8 +1,8 @@
 <template>
   <div id="left-window-users-chats">
       <div id="chats">
-          <div id="existing-chats">
-
+          <div id="existing-chats" v-for="chat in chats" :key="chat.grc_id">
+              <h5> {{chat.grc_name}} </h5>
           </div>
           <div id="make-chat">
               <h2>Chosen users for new chat</h2>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-    props:['users'],
+    props:['users', 'chats'],
     data() {
         return {
             usersChosenForNewChat:[],
