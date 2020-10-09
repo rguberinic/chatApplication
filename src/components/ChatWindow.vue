@@ -38,12 +38,12 @@ export default {
   #chat-window {
     height: 100%;
     width: 100%;
-    border:1px solid yellow;
+
 
     #message-container {
-      height: 90%;
+      height: 85.9%;
       width: 100%;
-      border:1px solid pink;
+      overflow-y: scroll;
     }
 
     #input-container {

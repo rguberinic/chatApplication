@@ -2,7 +2,7 @@
   <div id="main">
     <div id="interface">
       <div id="interface-left">
-
+        <LeftWindowUsers :users='users'/>
       </div>
       <div id="interface-center">
         <ChatWindow :messages='messages'/>
@@ -15,16 +15,20 @@
 </template>
 
 <script>
+import User from '../javascript/User'
+import LeftWindowUsers from '../components/LeftWindowUsers'
 import Message from '../javascript/Message'
 import axios from 'axios'
 import ChatWindow from '../components/ChatWindow'
 export default {
   components: {
-    ChatWindow
+    ChatWindow,
+    LeftWindowUsers
   },
   data(){
     return {
-      messages:[]
+      messages:[],
+      users:[]
     }
   },
   methods: {
@@ -36,18 +40,28 @@ export default {
       })
       .then((response)=> {
         for(let i = 0; i < response.data.data.length; i++) {
-          // console.log(response.data.data[i])
           this.messages.push(new Message(response.data.data[i].msg_id,response.data.data[i].msg_content,response.data.data[i].msg_time,response.data.data[i].usr_id,response.data.data[i].usr_username))
         }
-        console.log(this.messages)
       })
       .catch((error)=> {
+        console.log(error);
+      })
+    },
+    getUsers(){
+      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/auth/login')
+      .then((response)=> {
+        for(let i = 0; i < response.data.users.length; i++) {
+          this.users.push(new User(response.data.users[i].usr_id,response.data.users[i].usr_username,response.data.users[i].usr_email))
+        }
+      })
+      .catch(function (error) {
         console.log(error);
       })
     }
   },
   mounted() {
     this.getChat()
+    this.getUsers()
   }
 }
 </script>
@@ -63,7 +77,7 @@ export default {
     height: 95%;
     width: 100%;
     border: 1px solid black;
-    @include Flex(column)
+    @include Flex(column);
 
     #interface {
       width:80%;
@@ -76,11 +90,11 @@ export default {
         width:25%;
         height: 100%;
       }
-    #interface-center {
-      width: 50%;
-      height: 100%;
-      
-    }
+      #interface-center {
+        width: 50%;
+        height: 100%;
+        
+      }
     }
   }
 </style>
