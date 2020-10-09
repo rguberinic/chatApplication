@@ -10,8 +10,8 @@
       </div>
     </div>
     <div id="input-container">
-      <textarea></textarea>
-      <button>Send message</button>
+      <textarea v-model="msg"></textarea>
+      <button @click="handleSendMsg(msg)">Send message</button>
     </div>
   </div>
 </template>
@@ -19,7 +19,16 @@
 <script>
 export default {
   props:['messages'],
-
+  data () {
+    return{
+      msg: ''
+    }
+  },
+  methods: {
+    handleSendMsg (msg) {
+      this.$emit('handleSendMsg', msg)
+    }
+  },
   mounted(){
     
   }
@@ -44,6 +53,7 @@ export default {
       height: 90%;
       width: 100%;
       border:1px solid pink;
+      overflow: auto;
     }
 
     #input-container {
