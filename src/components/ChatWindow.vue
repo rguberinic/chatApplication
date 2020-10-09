@@ -26,6 +26,7 @@ export default {
   },
   methods: {
     handleSendMsg (msg) {
+      console.log(this.msg)
       this.$emit('handleSendMsg', msg);
       this.msg = '';
     }
