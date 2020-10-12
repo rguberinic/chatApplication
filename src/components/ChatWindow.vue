@@ -3,15 +3,17 @@
     <div id="message-container">
       <div class="single-message" v-for="message in messages" :key="message.msgId" :class='{reverse: message.userId == currentUser.userId}'>
         <div>
-          <h3>{{message.userUsername}}</h3>
-          <p>{{message.msgContent}}</p>
+          <div>
+            <h3>{{message.userUsername}}</h3>
+            <p>{{message.msgContent}}</p>
+          </div>
         </div>
         <!-- <div class="msgTime">{{message.msgTime}}</div> -->
       </div>
     </div>
     <div id="input-container">
       <textarea v-model="msg"></textarea>
-      <button @click="handleSendMsg(msg)">Send message</button>
+      <button @click="handleSendMsg(msg)"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
 </template>
@@ -49,27 +51,28 @@ export default {
     flex-direction: $direction;
   }
 
-
   #chat-window {
     height: 100%;
     width: 100%;
+    // background: ;
 
 
     #message-container {
-      height: 85.9%;
+      height: 90%;
       width: 100%;
-      border:1px solid pink;
       overflow: auto;
     }
 
     #input-container {
-      @include Flex(row)
+      height: 10%;
+      display: flex;
     }
 
     textarea {
       width: 100%;
-      height: 74px;
       resize: none;
+      // margin: 0 3% 0 0;
+
 
       &:focus{
         outline: none;
@@ -77,7 +80,18 @@ export default {
     }
 
     button {
-      height: 74px;
+      background-color:#1B4B7D;
+      color:#fff;
+      border:none;
+      outline:none;
+      width: 80px;
+      font-size: 1.5em;
+      transition: ease-in-out .3s;
+
+      &:hover {
+        font-size: 2em;
+        background-color: #316294;
+      }
     }
 
     .single-message {
@@ -85,6 +99,13 @@ export default {
       align-items: center;
       justify-content: space-between;
       margin: 2% 2% 3% 2%;
+
+      div {
+        background-color: #316294;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 15px;
+      }
 
       h3 {
         text-align: left;
@@ -98,10 +119,16 @@ export default {
 
   .reverse {
     flex-direction: row-reverse;
-    
 
     h3 {
       text-align: right !important;
     }
+
+    div {
+      color: #316294 !important;;
+      background-color: #fff !important;
+      padding: 5px 10px;
+      border-radius: 15px;
+      }
   }
 </style>

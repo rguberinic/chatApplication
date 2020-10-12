@@ -8,7 +8,7 @@
         <ChatWindow :messages='messages' @handleSendMsg='handleSendMsg'/>
       </div>
       <div id="interface-right">
-        <RightCurrentChatParticipants :currentChatParticipants='currentChatParticipants' :users='users' @handleRemoveParticipants='handleRemoveParticipants'/>
+        <RightCurrentChatParticipants :currentChatParticipants='currentChatParticipants' :users='users' @handleAddParticipants='handleAddParticipants' @handleRemoveParticipants='handleRemoveParticipants' :usersNotParticipating='usersNotParticipating'/>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@ export default {
       chats: [],
       groupChatId: null,
       currentChatParticipants:[],
-      usersNotParticipatig:[]
+      usersNotParticipating:[],
     }
   },
   methods: {
@@ -51,10 +51,26 @@ export default {
         for(let i = 0; i < response.data.groupChatUsers.length; i++){
           this.currentChatParticipants.push(new User(response.data.groupChatUsers[i].usr_id,response.data.groupChatUsers[i].usr_username,response.data.groupChatUsers[i].usr_email))
         }
+
+
         this.messages = [];
         for(let i = 0; i < response.data.data.length; i++) {
           this.messages.push(new Message(response.data.data[i].msg_id,response.data.data[i].msg_content,response.data.data[i].msg_time,response.data.data[i].usr_id,response.data.data[i].usr_username))
         }
+        this.usersNotParticipating = []
+        for(let i = 0; i < this.users.length; i++) {
+          let counter = 0
+          for(let j = 0; j < this.currentChatParticipants.length; j++) {
+            if(this.users[i].username != this.currentChatParticipants[j].username){
+              counter++
+              if(counter == this.currentChatParticipants.length){
+                this.usersNotParticipating.push(this.users[i])
+                counter = 0
+              }
+            }
+          }
+        }
+        console.log(this.usersNotParticipating)
       })
       .catch((error)=> {
         console.log(error);
@@ -142,6 +158,28 @@ export default {
           for(let i = 0; i < this.currentChatParticipants.length; i++) {
             if(this.currentChatParticipants[i].userId == userId){
               this.currentChatParticipants.splice(i,1)
+              this.usersNotParticipating.push(this.currentChatParticipants[i])
+            }
+          }
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    handleAddParticipants(userId) {
+      console.log(localStorage.getItem('sid'),this.groupChatId,userId)
+      axios.patch('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + this.groupChatId, {
+        sid:localStorage.getItem('sid'),
+        grcId:this.groupChatId,
+        insertUserId:userId
+      })
+      .then((response) => {
+        if(response.data.message == 'Ok'){
+          for(let i = 0; i < this.usersNotParticipating.length; i++) {
+            if(userId == this.usersNotParticipating[i].userId){
+              this.currentChatParticipants.push(this.usersNotParticipating[i])
+              this.usersNotParticipating.splice(i,1)
             }
           }
         }
@@ -153,12 +191,11 @@ export default {
   },
   mounted() {
     this.getUsers()
-    this.getChat(17)
     this.fetchGroupChats()
-        setInterval(() => {
-      this.getChat(this.groupChatId)
-      console.log('new msgs')
-    }, 3000);
+    // setInterval(() => {
+    //   this.getChat(this.groupChatId)
+
+    // }, 3000);
   },
 
 }
@@ -172,19 +209,24 @@ export default {
     flex-direction: $direction;
   }
   #main {
+    font-family: 'PT Serif', serif;
     height: 95%;
     width: 100%;
-    border: 1px solid black;
     @include Flex(column);
+    border-radius: 15px;
+
 
     #interface {
       width:80%;
       height:80%;
-      border:1px solid black;
+      border: 1px solid #1B4B7D;
       @include Flex(row);
+      -webkit-box-shadow: 14px 10px 49px -4px rgba(255,255,255,0.99);
+      -moz-box-shadow: 14px 10px 49px -4px rgba(255,255,255,0.99);
+      box-shadow: 14px 10px 49px -4px rgba(255,255,255,0.99);
 
       #interface-left,#interface-right {
-        border:1px solid black;
+        border: 1px solid #1B4B7D;
         width:25%;
         height: 100%;
       }

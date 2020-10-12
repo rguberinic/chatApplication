@@ -37,6 +37,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   height: 100vh;
+  background: #FFD08A/* fallback for old browsers */
+
+
 }
 
 </style>
