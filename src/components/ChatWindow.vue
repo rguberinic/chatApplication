@@ -1,6 +1,6 @@
 <template>
   <div id="chat-window">
-    <div id="message-container">
+    <div ref='messageContainer' id="message-container">
       <div class="single-message" v-for="message in messages" :key="message.msgId" :class='{reverse: message.userId == currentUser.userId}'>
         <div>
           <div>
@@ -24,7 +24,8 @@ export default {
   props:['messages'],
   data () {
     return{
-      msg: ''
+      msg: '',
+      scrollHeight: null
     }
   },
   methods: {
@@ -32,13 +33,21 @@ export default {
       console.log(this.msg)
       this.$emit('handleSendMsg', msg);
       this.msg = '';
+    },
+    onScroll(e) {
+      console.log(e.target.scrollTop)
+      if(e.target.scrollTop == 0){
+        this.$emit('fetchOldMessages')
+      }
+     
     }
   },
   computed: {
     ...mapState(['currentUser'])
   },
   mounted(){
-    
+    this.$refs.messageContainer.addEventListener("scroll", this.onScroll)
+    console.log()
   }
 }
 </script>

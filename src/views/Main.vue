@@ -5,7 +5,7 @@
         <LeftWindowUsersChats :users='users' @handleMakeAChat='handleMakeAChat' :chats='chats' @handleChangeChat='handleChangeChat' />
       </div>
       <div id="interface-center">
-        <ChatWindow :messages='messages' @handleSendMsg='handleSendMsg'/>
+        <ChatWindow :messages='messages' @handleSendMsg='handleSendMsg' @fetchOldMessages='fetchOldMessages'/>
       </div>
       <div id="interface-right">
         <RightCurrentChatParticipants :currentChatParticipants='currentChatParticipants' :users='users' @handleAddParticipants='handleAddParticipants' @handleRemoveParticipants='handleRemoveParticipants' :usersNotParticipating='usersNotParticipating'/>
@@ -37,6 +37,7 @@ export default {
       groupChatId: null,
       currentChatParticipants:[],
       usersNotParticipating:[],
+      oldestMessage: null
     }
   },
   methods: {
@@ -54,9 +55,12 @@ export default {
 
 
         this.messages = [];
-        for(let i = 0; i < response.data.data.length; i++) {
-          this.messages.push(new Message(response.data.data[i].msg_id,response.data.data[i].msg_content,response.data.data[i].msg_time,response.data.data[i].usr_id,response.data.data[i].usr_username))
+        console.log(response.data.lastReadMsgs)
+        for(let i = 0; i < response.data.lastReadMsgs.length; i++) {
+          this.messages.push(new Message(response.data.lastReadMsgs[i].msg_id,response.data.lastReadMsgs[i].msg_content,response.data.lastReadMsgs[i].msg_time,response.data.lastReadMsgs[i].usr_id,response.data.lastReadMsgs[i].usr_username))
         }
+        this.oldestMessage = this.messages[this.messages.length-1].msgId
+        console.log(this.oldestMessage)
         this.usersNotParticipating = []
         for(let i = 0; i < this.users.length; i++) {
           let counter = 0
@@ -77,7 +81,11 @@ export default {
       })
     },
     getUsers(){
-      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/auth/login')
+      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/auth/login',{
+        params:{
+          sid:localStorage.getItem('sid')
+        }
+      })
       .then((response)=> {
         this.users = []
         for(let i = 0; i < response.data.users.length; i++) {
@@ -187,6 +195,31 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+    fetchOldMessages() {
+      axios.get('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + this.groupChatId, {
+        params: {
+          sid:localStorage.getItem('sid'),
+          fetchMoreMsg:this.oldestMessage
+        }
+      })
+      .then((response)=> {
+        console.log(response.data.oldMsgs);
+        if(response.data.oldMsgs == 'No more messages.') {
+          return
+        }
+        for(let i = 0; i < response.data.oldMsgs.length; i++) {
+          this.messages.unshift(new Message(response.data.oldMsgs[i].msg_id,response.data.oldMsgs[i].msg_content,response.data.oldMsgs[i].msg_time,response.data.oldMsgs[i].usr_id,response.data.oldMsgs[i].usr_username))
+        }
+        this.oldestMessage = this.messages[0].msgId
+        console.log(this.oldestMessage)
+      })
+      .catch((error)=> {
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+      });  
     }
   },
   mounted() {
