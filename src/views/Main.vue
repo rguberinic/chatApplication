@@ -51,6 +51,7 @@ export default {
         }
       })
       .then((response)=> {
+        console.log(response)
         this.currentChatParticipants = []
         for(let i = 0; i < response.data.groupChatUsers.length; i++){
           this.currentChatParticipants.push(new User(response.data.groupChatUsers[i].usr_id,response.data.groupChatUsers[i].usr_username,response.data.groupChatUsers[i].usr_email))
@@ -78,7 +79,6 @@ export default {
       })
     },
     handleSendMsg (msg) {
-      console.log(this.groupChatId)
       axios.post('http://097a122.e2.mars-hosting.com/praksa_2020_septembar/api/group_chat/' + this.groupChatId, {
         sid: localStorage.getItem('sid'),
         grcId: this.groupChatId,
@@ -120,7 +120,6 @@ export default {
         }
       })
       .then ((res) => {
-        console.log(res)
         this.chats = res.data.data;
         this.groupChatId = this.chats[0].grc_id;
       })
@@ -130,7 +129,6 @@ export default {
     },
     handleChangeChat (grcId) {
       this.groupChatId = grcId
-      console.log(this.groupChatId)
       this.getChat(grcId)
     },
     handleRemoveParticipants(userId) {
@@ -182,7 +180,6 @@ export default {
     this.fetchGroupChats()
         setInterval(() => {
       this.getChat(this.groupChatId)
-      console.log('new msgs')
     }, 3000);
   },
 
